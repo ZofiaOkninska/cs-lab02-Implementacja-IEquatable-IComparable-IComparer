@@ -2,7 +2,8 @@
 {
     static void Main(string[] args)
     {
-        Step1();
+        //Step1();
+        Step2();
     }
 
     static void Step1()
@@ -65,4 +66,33 @@
         //Equals(object obj) is executed if obj is of type object, object?, Object or Object?
         */
     }
+
+    static void Step2()
+    {   
+        var list = new List<Pracownik>();
+        list.Add(new Pracownik("Nowak", new DateTime(2010, 10, 12), 1_600));
+        list.Add(new Pracownik("Nowak", new DateTime(2011, 10, 11), 1_500));
+        list.Add(new Pracownik("Kowalski", new DateTime(2012, 11, 1), 1_700));
+        list.Add(new Pracownik("Dadacki", new DateTime(2010, 10, 1), 1_800));
+        list.Add(new Pracownik("Cacacki", new DateTime(2013, 12, 1), 1_800));
+
+        Console.WriteLine(list); //wypisze typ, a nie zawartość listy
+
+        Console.WriteLine("-- Wariant 1 --");
+        foreach(var pracownik in list)
+            Console.WriteLine(pracownik);
+
+        Console.WriteLine("-- Wariant 2 --");
+        list.ForEach((p) => {Console.Write(p + ",");});//nie dodaje nowej linii na końcu, bo to Console.Write
+        Console.WriteLine( );
+
+        Console.WriteLine("-- Wariant 3 --");
+        Console.WriteLine(string.Join('\n', list));//Join przyjmuje separator i kolekcję przez którą ma iterować
+
+        list.Sort();//zadziała, jeśli klasa Pracownik implementuje IComparable<Pracownik>
+
+        Console.WriteLine("Po posortowaniu:");
+        foreach(var pracownik in list)
+            Console.WriteLine(pracownik);
+        }
 }

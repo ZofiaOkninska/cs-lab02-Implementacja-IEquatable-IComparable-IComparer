@@ -1,5 +1,6 @@
 using System;
-public class Pracownik : IEquatable<Pracownik> {
+public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik> 
+{
 
     #region private fields
     private string _nazwisko;
@@ -86,9 +87,7 @@ public class Pracownik : IEquatable<Pracownik> {
     }
     #endregion
 
-
     public override string ToString() => $"({Nazwisko}, {DataZatrudnienia:d MMM yyyy} ({CzasZatrudnienia}), {Wynagrodzenie} PLN)";
-
 
     #region implementation of IEquatable<Pracownik> 
 
@@ -157,7 +156,7 @@ public class Pracownik : IEquatable<Pracownik> {
             
             //Console.WriteLine("...obj is Pracownik");
             //Console.WriteLine($"...obj: {obj}");
-            return Equals((Pracownik)obj);
+            return Equals((Pracownik)obj); /* CAUTION: here Equals(Pracownik other) is called */
         }
         else {/* this line will execute if obj is not Pracownik or if obj is null */
             //Console.WriteLine("---obj is not Pracownik or obj is null form Equals(object obj)");
@@ -185,21 +184,55 @@ public class Pracownik : IEquatable<Pracownik> {
     {
         Console.WriteLine($"it enters Equals(Pracownik p1, Pracownik p2)");
         if ((p1 is null) && (p2 is null)) return true; /* w C#: null == null */
-        if ((p1 is null)) return false;
+        if ((p1 is null)) return false;//being in this line means that p2 is not null for sure because above line would execute then
 
-        /* p1 nie jest `null`, nie będzie NullReferenceException */
-        return p1.Equals(p2);
+        /* p1 nie jest `null`, nie będzie NullReferenceException gdyby jednak był */
+        /* główną przyczyną wywołania NullReferenceException są sytuacje jak np. null.Euals(p2) */
+        /* so as above here is also not possibe for p2 to be null as well as for p1 */
+        return p1.Equals(p2); /* CAUTION: here Equals(object obj) is called */
     }
 
     /*NOTES:
     //From DOCS: A user-defined type can overload the == and != operators. 
     //If a type overloads one of the two operators, it must also overload the other one.
     //
+    //aby przedefiniować operator należy użyć słoówka kluczowego `operator`
+    //jest to metoda specjalnie nazwana "==" albo "!="
     //BELOW: przeciążenie (overload) operatora `==` i `!=` 
     */
-    public static bool operator ==(Pracownik p1, Pracownik p2) => Equals(p1, p2);
-    public static bool operator !=(Pracownik p1, Pracownik p2) => !(p1 == p2);
+    public static bool operator ==(Pracownik p1, Pracownik p2) => Equals(p1, p2); /* CAUTION: here Equals(Pracownik p1, Pracownik p2) is called */
+    public static bool operator !=(Pracownik p1, Pracownik p2) => !(p1 == p2); /* CAUTION (łańcuchowanie) : here ==(Pracownik p1, Pracownik p2) is called */
     #endregion
+
+    #region implementacja IComparable<Pracownik>
+    /*NOTES:
+    //returns whether: THIS > OTHER  => 1
+    //                 THIS == OTHER => 0
+    //                 THIS < OTHER  => -1
+    */
+    public int CompareTo(Pracownik other)
+    {   
+        /* w C#: null jest najmniejszą wartością (`this > null`) */
+        if (other is null) return 1; 
+        /* zgodność z Equals (`this == other`) */
+        if (this.Equals(other)) return 0; //calls Equals(Pracownik other)
+
+        /* setp 1: check if equal */
+        if (this.Nazwisko != other.Nazwisko)
+            /* step 2: if not equal compare */
+            return this.Nazwisko.CompareTo(other.Nazwisko); //calls CompareTo(string other)
+
+        /* ponieważ nazwiska równe, porządkujemy wg daty */
+        /* "!=" zamiast "!Equals" */
+        if (!this.DataZatrudnienia.Equals(other.DataZatrudnienia)) //calls Equals(DateTime other)
+            /* daty są sortowane najpierw NAJSTARSZE !!, na końcu najmłodsze */
+            return this.DataZatrudnienia.CompareTo(other.DataZatrudnienia); //calls CompareTo(DateTime other)
+
+        /* ponieważ nazwiska równe i daty równe, porządkujemy wg wynagrodzenia */
+        return this.Wynagrodzenie.CompareTo(other.Wynagrodzenie);//calls CompareTo(decimal other)
+    }
+
+    #endregion implementacja IComparable<Pracownik>
 }
 
 
