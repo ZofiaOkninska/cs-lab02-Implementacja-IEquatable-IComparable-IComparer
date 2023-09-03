@@ -3,7 +3,8 @@
     static void Main(string[] args)
     {
         //Step1();
-        Step2();
+        //Step2();
+        Step3();
     }
 
     static void Step1()
@@ -94,5 +95,28 @@
         Console.WriteLine("Po posortowaniu:");
         foreach(var pracownik in list)
             Console.WriteLine(pracownik);
-        }
+    }
+
+    static void Step3()
+    {
+        var lista = new List<Pracownik>();
+        lista.Add(new Pracownik("CCC", new DateTime(2010, 10, 02), 1050));
+        lista.Add(new Pracownik("AAA", new DateTime(2010, 10, 01), 100));
+        lista.Add(new Pracownik("DDD", new DateTime(2010, 10, 03), 2000));
+        lista.Add(new Pracownik("AAA", new DateTime(2011, 10, 01), 1000));
+        lista.Add(new Pracownik("BBB", new DateTime(2010, 10, 01), 1050));
+
+        Console.WriteLine(lista); //wypisze typ, a nie zawartość listy
+        foreach (var pracownik in lista)
+            System.Console.WriteLine(pracownik);
+
+        Console.WriteLine("--- Zewnętrzny porządek - obiekt typu IComparer" + Environment.NewLine
+                            + "najpierw według czasu zatrudnienia (w miesiącach), " + Environment.NewLine
+                            + "a później według wynagrodzenia - wszystko rosnąco");
+
+        /* Używamy przeciążonej metody Sort<T> zdefiniowanej w klasie List<T>, wymagającej dostarczenia obiektu typu IComparer */
+        lista.Sort(new WgCzasuZatrudnieniaPotemWgWynagrodzeniaComparer());
+        foreach (var pracownik in lista)
+            System.Console.WriteLine(pracownik);
+    }
 }
