@@ -49,13 +49,9 @@ public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik>
     /* NOTES:
     //queston for CzasZatrudnienia below: jak to jest property to znaczy że ma getter i setter, ale jak to jest readonly?
     //why below is readonly? because it has only getter
-    //then why it is property? because it has getter and setter
-    //where is setter? there is no setter
-    //if there is no setter then why it is property? because it has getter
-    //link for below: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties
-    //is setter required to call a field a property? no
-    //is getter required to call a field a property? no
+    //then why it is property? because it has getter or setter
     //what is required to call a field a property? get or set
+    //
     //if field has only access modifier then it is a field, not a property!
     //waht else could be applied to a property? access modifiers, forexample: public or private or protected or internal or protected internal or private protected or static or virtual or sealed or override or abstract or extern or new or unsafe or partial  or volatile or ref or out or in or params or this or value or nameof or get or set or add or remove or operator or implicit or explicit or explicit or extern or ext 
     //is it possible to have a property without getter and setter? no
@@ -67,8 +63,7 @@ public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik>
     //when is this property given a value? when it is called
     //
     //In C# 6, get; only properties are only settable from the constructor. From everywhere else, it is read-only.  
-    //why the get-only property is not called on object construction? TODO: check it
-    //if property has only setter what happens with it on constructing an object of this class? it is not called
+    //why the get-only property is not called on object construction? TO CHECK
     */
     public int CzasZatrudnienia => (DateTime.Now - DataZatrudnienia).Days / 30;//important  - you can do it with dates
     #endregion
@@ -91,21 +86,21 @@ public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik>
 
     #region implementation of IEquatable<Pracownik> 
 
-    /*--implementacja Equals wymagana przez implementację interfejsu IEquatable<Pracownik>
-      --Equals nie może zgłaszać wyjątków !*/
-    public bool Equals(Pracownik other) /* types (Pracownik?) can enter this method? yes; */
+    /*NOTES:
+    //implementacja Equals wymagana przez implementację interfejsu IEquatable<Pracownik>
+    //Equals nie może zgłaszać wyjątków !
+    //  
+    //we check for nulls when we have a reference type!! because value types (typ strukturalny) can not be null (są niedopuszczone),
+    //chyba że jest to typ strukturalny z dopiskiem "?" (nullable) - wtedy może być null
+    */
+    public bool Equals(Pracownik other) /* types (Pracownik?) can enter this method? yes; why? TODO */
     {
-        //Console.WriteLine($"it enters Equals(Pracownik other)");
-        //Console.WriteLine($"...{other}");
-        //Console.WriteLine($"...{this}");
-
-        /*BELOW: executes when other is null [p1.Equals(null)] or if of type nullable Pracownik: Pracownik? */
+        /*BELOW: gives true when other is null: [p1.Equals(null)] or if of type nullable Pracownik: Pracownik? and equal null */
         if (other is null) { 
-            //Console.WriteLine("...other is null from Equals(Pracownik other))");
             return false;
             }
-        if (Object.ReferenceEquals(this, other)) { /* --other i this są referencjami do tego samego obiektu */
-            //Console.WriteLine("...other i this są referencjami do tego samego obiektu");
+            /*BELOW: umożliwia oprównywanie w sposób niezasłanialny; jest zdefiniowana jako static w Object*/
+        if (Object.ReferenceEquals(this, other)) { /* other i this są referencjami do tego samego obiektu */
             return true;
         }
 
@@ -116,35 +111,36 @@ public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik>
     }
 
     /*NOTES:
-    //---formalnie wymagane przesłonięcie Equals i GetHashCode z klasy Object - równocześnie
-    //--https://docs.microsoft.com/en-Us/dotnet/api/system.object.gethashcode?view=netstandard-2.1#System_Object_GetHashCode
+    //formalnie wymagane przesłonięcie Equals i GetHashCode z klasy Object - równocześnie
+    //https://docs.microsoft.com/en-Us/dotnet/api/system.object.gethashcode?view=netstandard-2.1#System_Object_GetHashCode
     //
     //The null keyword is a literal that represents a null reference, one that does not refer to any object.
     //is null a reference type or value type? reference
+    //
     //object is a base class for all types
     */
-    public override bool Equals(object obj)/* this method is virtual in Object class */
+    public override bool Equals(object obj)/* this method is virtual in Object class so we override*/
     {   
         /*NOTES:
-        //can obj here be equal to null? yes; why? because null is also object (value or reference? reference)
-        //it could be checked like this: obj == null and result would be true; why? because null is object in a reference way
-        //in obj == null both are checked for the same value or reference? reference
-        //== compared two objects for equality (for objects it is reference equality, but for value types it is value equality) 
-        //it could be called like this: Equals(null) and result would be false; why? because null is not Pracownik 
+        //can obj here be equal to null? yes; why? because null is also object: TO CHECK
+        //it could be checked if equal to null like this: obj == null and result would be true; why? because obj would then have null reference
+        //in obj == null both are checked for the same reference
         //
-        //can obj be checked if it is null in a value way? no; why? because it is reference type
+        //== compared two objects for equality (for objects it is REFERENCE EQUALITY, but for value types it is value equality) 
+        //
+        //Equals(null) and result would be false; why? because null is not Pracownik 
+        //
+        //can obj be checked if it is null in a value way? TO CHECK
         //can obj be checked if it is null in a reference way? yes; why? because it is reference type
         //
-        //object? x means that x is a reference type but it can be equal null
         //object? a = new Praownik(); means that a is a reference type but it can be null 
-        //object a = new Praownik(); means that a is a reference type and it can not be null
-        //does reference types have a value? no; why? because they are reference types
-        //so Pracownik? a = null means it is null in a reference way 
+        //object a = new Praownik(); means that a is a reference type and it can be null (because object)
+        //Pracownik? a = null means it is null in a reference way 
         //
         //"is" operator checks if obj is of a given type 
         //
         //what data type can enter this method? object - what means that any data type can enter this method eg. int, string, Pracownik, etc.
-        //even null keyword can enter this method? yes; why? because it is object
+        //even null keyword can enter this method? yes; why? because it is object TO CHECK
         */
 
         if (obj is Pracownik) {/* what this line would return if obj is null? false; why? because null is not Pracownik */
@@ -153,13 +149,9 @@ public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik>
             //can obj here be in the type of Object? yes; why? because it is checked if obj is Pracownik and Pracownik is Object
             //the evaluation: if (null is Pracownik) will return false; why? because null is not Pracownik
             */
-            
-            //Console.WriteLine("...obj is Pracownik");
-            //Console.WriteLine($"...obj: {obj}");
             return Equals((Pracownik)obj); /* CAUTION: here Equals(Pracownik other) is called */
         }
         else {/* this line will execute if obj is not Pracownik or if obj is null */
-            //Console.WriteLine("---obj is not Pracownik or obj is null form Equals(object obj)");
             return false;
         }
     }
@@ -178,7 +170,7 @@ public class Pracownik : IEquatable<Pracownik>, IComparable<Pracownik>
     //it is overloading because it has the same name but different parameters (even the same static type)
     //QUESTION: then in index.md it should be written: przeciążając tę, zdefiniowaną w klasie Object, right? 
     //
-    //BELOW: przeciążenie (overload) metody Equals(Pracownik p1, Pracownik p2)
+    //BELOW: przeciążenie (overload) metody Equals(object objA, object objB) przez Equals(Pracownik p1, Pracownik p2)
     */
     public static bool Equals(Pracownik p1, Pracownik p2)
     {
