@@ -116,6 +116,34 @@
 
         /* Używamy przeciążonej metody Sort<T> zdefiniowanej w klasie List<T>, wymagającej dostarczenia obiektu typu IComparer */
         lista.Sort(new WgCzasuZatrudnieniaPotemWgWynagrodzeniaComparer());
+        
+        foreach (var pracownik in lista)
+            System.Console.WriteLine(pracownik);
+
+        
+        Console.WriteLine("--- Zewnętrzny porządek - delegat typu Comparison" + Environment.NewLine
+                        + "najpierw według czasu zatrudnienia (w miesiącach), " + Environment.NewLine
+                        + "a później kolejno według nazwiska i wynagrodzenia - wszystko rosnąco");
+        /*NOTES:
+        // sklejamy odpowiednio napisy i je porównujemy
+        // ToString("D3") - wyrównanie do 3 znaków, jeśli mniej, to uzupełniamy zerami z przodu
+        // ToString("00000.00") - wyrównanie do 7 znaków, jeśli mniej, to uzupełniamy zerami z przodu
+        // QUESTION: co jeśli dwa porównywane nazwiska będą miały różną długość? 
+        // ANSWEAR: litera w porównaniu z cyfrą w ASCII jest mniejsza (np. 'A' < '0')
+        // string a = "157AAA200";
+        // string b = "157AAAA100";
+        // w kolejności rosnącej: a < b, czyli na liście wyżej będzie a
+         */
+        /* Używamy przeciążonej metody Sort<T> zdefiniowanej w klasie List<T>, wymagającej dostarczenia delegata typu Comparison */
+        lista.Sort((p1, p2) => (p1.CzasZatrudnienia.ToString("D3")
+                                    + p1.Nazwisko + p1.Wynagrodzenie.ToString("00000.00")
+                                )
+                                .CompareTo
+                                (p2.CzasZatrudnienia.ToString("D3")
+                                    + p2.Nazwisko + p2.Wynagrodzenie.ToString("00000.00")
+                                )
+                    );
+
         foreach (var pracownik in lista)
             System.Console.WriteLine(pracownik);
     }
