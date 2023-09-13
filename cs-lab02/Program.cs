@@ -146,5 +146,19 @@
 
         foreach (var pracownik in lista)
             System.Console.WriteLine(pracownik);
+
+        
+        Console.WriteLine("--- Zewnętrzny porządek - delegat typu Comparison" + Environment.NewLine
+                        + "kolejno: malejąco według wynagrodzenia, " + Environment.NewLine
+                        + "później rosnąco według czasu zatrudnienia");
+
+        //budujemy warunek wyrażeniem warunkowym ()?:
+        lista.Sort((p1, p2) => (p1.Wynagrodzenie != p2.Wynagrodzenie) ?
+                                    (-1) * (p1.Wynagrodzenie.CompareTo(p2.Wynagrodzenie)) :
+                                    p1.CzasZatrudnienia.CompareTo(p2.CzasZatrudnienia)
+                    );
+                    
+        foreach (var pracownik in lista)
+            System.Console.WriteLine(pracownik);
     }
 }
