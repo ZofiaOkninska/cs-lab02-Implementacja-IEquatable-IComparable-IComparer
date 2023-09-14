@@ -1,10 +1,13 @@
-﻿class Program
+﻿using System.Linq;
+
+class Program
 {
     static void Main(string[] args)
     {
         //Step1();
         //Step2();
-        Step3();
+        //Step3();
+        Step4();
     }
 
     static void Step1()
@@ -110,6 +113,7 @@
         foreach (var pracownik in lista)
             System.Console.WriteLine(pracownik);
 
+        //Environment.NewLine - zwraca znaki nowej linii zależne od systemu operacyjnego
         Console.WriteLine("--- Zewnętrzny porządek - obiekt typu IComparer" + Environment.NewLine
                             + "najpierw według czasu zatrudnienia (w miesiącach), " + Environment.NewLine
                             + "a później według wynagrodzenia - wszystko rosnąco");
@@ -157,8 +161,34 @@
                                     (-1) * (p1.Wynagrodzenie.CompareTo(p2.Wynagrodzenie)) :
                                     p1.CzasZatrudnienia.CompareTo(p2.CzasZatrudnienia)
                     );
-                    
+
         foreach (var pracownik in lista)
+            System.Console.WriteLine(pracownik);
+            
+    }
+
+     static void Step4()
+    {
+        var lista = new List<Pracownik>()//notice this type of notation for creating a list
+        {
+            new Pracownik("CCC", new DateTime(2010, 10, 02), 1050),
+            new Pracownik("AAA", new DateTime(2010, 10, 01), 100),
+            new Pracownik("DDD", new DateTime(2010, 10, 03), 2000),
+            new Pracownik("AAA", new DateTime(2011, 10, 01), 1000),
+            new Pracownik("BBB", new DateTime(2010, 10, 01), 1050)
+        };
+
+        Console.WriteLine(lista); //wypisze typ, a nie zawartość listy
+        foreach (var pracownik in lista)
+            System.Console.WriteLine(pracownik);
+
+        Console.WriteLine("--- Porządkowanie za pomocą metod rozszerzających Linq" + Environment.NewLine
+                        + "kolejno: rosnąco według wynagrodzenia, " + Environment.NewLine
+                        + "później malejąco według nazwiska");
+        
+        var query = lista.OrderBy(p => p.Wynagrodzenie).ThenByDescending(p => p.Nazwisko);
+        
+        foreach (var pracownik in query)
             System.Console.WriteLine(pracownik);
     }
 }
