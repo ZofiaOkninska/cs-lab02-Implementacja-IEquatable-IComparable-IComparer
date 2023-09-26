@@ -7,7 +7,8 @@ class Program
         //Step1();
         //Step2();
         //Step3();
-        Step4();
+        //Step4();
+        Step5();
     }
 
     static void Step1()
@@ -167,7 +168,7 @@ class Program
             
     }
 
-     static void Step4()
+    static void Step4()
     {
         var lista = new List<Pracownik>()//notice this type of notation for creating a list
         {
@@ -190,5 +191,31 @@ class Program
         
         foreach (var pracownik in query)
             System.Console.WriteLine(pracownik);
+    }
+
+    static void Step5()
+    {
+        var lista = new List<Pracownik>()
+        {
+            new Pracownik("CCC", new DateTime(2010, 10, 02), 1050),
+            new Pracownik("AAA", new DateTime(2010, 10, 01), 100),
+            new Pracownik("DDD", new DateTime(2010, 10, 03), 2000),
+            new Pracownik("AAA", new DateTime(2011, 10, 01), 1000),
+            new Pracownik("BBB", new DateTime(2010, 10, 01), 1050)
+        };
+        var listaInt = new List<int> { 2, 5, 1, 2, 1, 7, 4, 5 };
+
+        Console.WriteLine($"Lista pracowników:\n{string.Join('\n', lista)}");
+        Console.WriteLine($"Lista liczb: {string.Join(',', listaInt)}");
+
+        // wewnętrzny porządek w zbiorze
+        Console.WriteLine("--- Porządkowanie za pomocą własnej metody sortującej" + Environment.NewLine
+            + "zgodnie z naturalnym porządkiem zdefiniowanym w klasie Pracownik ---");
+        
+        Sortowanie.Sortuj(lista); // wywołanie metody "tradycyjnie"
+        Console.WriteLine(string.Join('\n', lista));
+        
+        listaInt.Sortuj(); // wywołanie jako metody rozszerzajacej
+        Console.WriteLine(string.Join(',', listaInt));
     }
 }
